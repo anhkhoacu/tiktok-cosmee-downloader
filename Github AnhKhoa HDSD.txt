@@ -1,0 +1,11 @@
+Bro mở trình duyệt lên, vào lại link GitHub của bro:
+👉 https://github.com/anhkhoacu/tiktok-cosmee-downloader
+
+Bro sẽ thấy toàn bộ code đã nằm chễm chệ trên đó, kèm theo giao diện bản mô tả tính năng và hướng dẫn vận hành (README.md) hiển thị cực kỳ trực quan, chuyên nghiệp.
+
+Từ giờ mỗi lần bro sửa code hay cập nhật gì lớn, chỉ cần lặp lại đúng 3 bước thần thánh này dưới Terminal để đồng bộ lên GitHub lưu trữ:
+
+Bash
+git add .
+git commit -m "Ghi chú nội dung bro vừa sửa vào đây"
+git push

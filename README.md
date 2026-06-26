@@ -28,3 +28,14 @@ Mỗi kênh khi quét sẽ tự động tạo một thư mục riêng theo đị
 📂 Ngan_aleybeauty_Cosmee/
 ├── 📄 Khoi-nghi-le-o-nha-uop-matcha-latte-749944-@ngan_aleybeauty.mp4
 └── 📄 Khoi-nghi-le-o-nha-uop-matcha-latte-749944-@ngan_aleybeauty.json
+
+---
+
+## 📋 Yêu Cầu Hệ Thống & Cài Đặt
+
+Để script chạy được, máy tính của bro cần cài đặt sẵn **Python 3.x** và thư viện cào kênh chuyên dụng `yt-dlp`.
+
+### Cài đặt thư viện bằng Terminal:
+Bro mở Terminal/cmd lên và gõ lệnh sau trước khi chạy script:
+```bash
+pip install yt-dlp

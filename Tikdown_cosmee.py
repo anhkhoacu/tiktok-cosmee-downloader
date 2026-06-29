@@ -61,17 +61,53 @@ def get_channel_name(url):
     return match.group(1) if match else "unknown"
 
 def get_video_urls(channel_url):
-    import yt_dlp
-    print(f"\n🔍 Đang quét danh sách bài đăng từ kênh: {channel_url}...")
-    ydl_opts = {'extract_flat': True, 'force_generic_extractor': False, 'quiet': True, 'ignoreerrors': True}
+    username = get_channel_name(channel_url)
+    print(f"\n🔍 [TOÀN DIỆN] Đang quét TẤT CẢ video từ kênh: @{username}...")
     urls = []
-    try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            result = ydl.extract_info(channel_url, download=False)
-            if result and 'entries' in result:
-                for entry in result['entries']:
-                    if entry and 'url' in entry: urls.append(entry['url'])
-    except Exception as e: print(f"⚠️ Hạn chế quét tự động: {e}")
+    cursor = "0"  # Vị trí bắt đầu (0 nghĩa là đầu trang)
+    has_more = True
+    
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept-Language': 'vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7'
+    }
+
+    while has_more:
+        try:
+            # Gắn thêm tham số cursor để API biết cần lấy block video tiếp theo
+            api_user_url = f"https://www.tikwm.com/api/user/posts?unique_id={username}&count=50&cursor={cursor}"
+            req = urllib.request.Request(api_user_url, headers=headers)
+            
+            with urllib.request.urlopen(req) as response:
+                data = json.loads(response.read().decode())
+                
+                if data.get('code') == 0 and 'data' in data:
+                    res_data = data['data']
+                    videos = res_data.get('videos', [])
+                    
+                    for video in videos:
+                        video_id = video.get('video_id')
+                        if video_id:
+                            urls.append(f"https://www.tiktok.com/@{username}/video/{video_id}")
+                    
+                    print(f"   ↳ Đã thu thập được {len(urls)} video...")
+                    
+                    # Kiểm tra xem còn video để tải tiếp không
+                    has_more = res_data.get('hasMore', False)
+                    if has_more:
+                        cursor = res_data.get('cursor', '0')
+                        time.sleep(random.uniform(1.5, 3.0))  # Nghỉ ngắn giữa các lần lật trang để bảo vệ luồng mạng
+                    else:
+                        has_more = False
+                else:
+                    print("⚠️ API không trả về thêm dữ liệu hoặc hết danh sách.")
+                    has_more = False
+                    
+        except Exception as e: 
+            print(f"⚠️ Gián đoạn khi cào danh sách trang: {e}")
+            has_more = False  # Gặp lỗi thì dừng vòng lặp tránh treo tool
+
+    print(f"✅ TỔNG KẾT: Đã quét sạch hoàn toàn {len(urls)} link video của kênh @{username}!")
     return urls
 
 def download_tiktok_api(video_url, folder_save, username, current_idx, total_count):
